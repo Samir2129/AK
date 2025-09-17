@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Happy Birthday 🎉</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Landing Page -->
+  <section id="landing" class="section">
+    <h1 class="title">🎂 Happy Birthday <span id="friendName">[Friend’s Name]</span> 🎂</h1>
+    <button id="startBtn">Start Celebration 🎉</button>
+    <canvas id="balloons"></canvas>
+  </section>
+
+  <!-- Personalized Message -->
+  <section id="message" class="section hidden">
+    <div class="card">
+      <h2>My Special Wish 💖</h2>
+      <p>You are the best friend ever! Wishing you lots of joy, success, and happiness. 🎁</p>
+      <button onclick="nextSection('gallery')">Next ➡️</button>
+    </div>
+  </section>
+
+  <!-- Gallery -->
+  <section id="gallery" class="section hidden">
+    <h2>Memories Together 📸</h2>
+    <div class="slideshow">
+      <img src="assets/images/photo1.jpg" class="slide active">
+      <img src="assets/images/photo2.jpg" class="slide">
+      <img src="assets/images/photo3.jpg" class="slide">
+    </div>
+    <button onclick="nextSection('countdown')">Next ➡️</button>
+  </section>
+
+  <!-- Countdown -->
+  <section id="countdown" class="section hidden">
+    <h2>Countdown to Birthday 🎊</h2>
+    <div id="timer"></div>
+    <button onclick="nextSection('cake')">Next ➡️</button>
+  </section>
+
+  <!-- Cake -->
+  <section id="cake" class="section hidden">
+    <h2>Make a Wish 🎂</h2>
+    <div class="cake">
+      <div class="candle" id="candle"></div>
+    </div>
+    <button onclick="blowCandle()">Blow Candle 🕯️</button>
+    <button onclick="nextSection('fireworks')">Next ➡️</button>
+  </section>
+
+  <!-- Fireworks -->
+  <section id="fireworks" class="section hidden">
+    <h2>Celebrate 🎇</h2>
+    <button id="celebrateBtn">Start Fireworks 🎆</button>
+    <button onclick="nextSection('ending')">Next ➡️</button>
+    <canvas id="fireworksCanvas"></canvas>
+  </section>
+
+  <!-- Ending -->
+  <section id="ending" class="section hidden">
+    <h2>Hope you loved this surprise 💖</h2>
+    <button onclick="location.reload()">Replay Celebration 🔄</button>
+  </section>
+
+  <!-- Music -->
+  <audio id="bgMusic" src="assets/music/birthday.mp3" loop></audio>
+  <button id="musicBtn">🔊 Music</button>
+
+  <script src="script.js"></script>
+</body>
+</html>
