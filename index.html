@@ -1,73 +1,516 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Happy Birthday 🎉</title>
-  <link rel="stylesheet" href="style.css">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Happy Birthday — Surprise</title>
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&family=Playfair+Display:wght@600&display=swap" rel="stylesheet">
+  <style>
+    /* ----------------- THEME & RESET ----------------- */
+    :root{
+      --bg1: #0f2027; /* deep */
+      --bg2: #203a43;
+      --bg3: #2c5364;
+      --glass: rgba(255,255,255,0.06);
+      --accent: linear-gradient(90deg,#ff6ec7,#ff9a9e);
+      --card-radius: 18px;
+      --glass-border: rgba(255,255,255,0.08);
+      --glass-strong: rgba(255,255,255,0.12);
+      --neon: #f9f871;
+      color-scheme: dark;
+    }
+
+    *{box-sizing:border-box}
+    html,body{height:100%}
+    body{
+      margin:0;
+      font-family: 'Poppins', system-ui, -apple-system, 'Segoe UI', Roboto, 'Helvetica Neue', Arial;
+      background: radial-gradient(circle at 10% 10%, rgba(255,110,199,0.08), transparent 10%), linear-gradient(135deg,var(--bg1), var(--bg2) 40%, var(--bg3));
+      color:#fff;
+      -webkit-font-smoothing:antialiased;
+      -moz-osx-font-smoothing:grayscale;
+      overflow-x:hidden;
+    }
+
+    /* page layout */
+    .container{min-height:100vh;display:flex;flex-direction:column}
+    header{display:flex;justify-content:space-between;align-items:center;padding:18px 28px}
+    .logo{display:flex;gap:12px;align-items:center}
+    .logo .mark{width:48px;height:48px;border-radius:12px;background:var(--accent);display:flex;align-items:center;justify-content:center;font-weight:700;color:#fff;font-family:'Playfair Display'}
+    nav{display:flex;gap:12px}
+    nav button{background:transparent;border:1px solid transparent;color:rgba(255,255,255,0.6);padding:8px 12px;border-radius:10px;cursor:pointer}
+    nav button.active{border-color:var(--glass-border);background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01))}
+
+    main{flex:1;display:grid;place-items:center;padding:24px}
+    .section{width:min(1100px,96%);max-width:1100px;min-height:72vh;display:flex;align-items:center;justify-content:center;position:relative}
+
+    /* GLASS CARD */
+    .glass{background:linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.02));border-radius:var(--card-radius);padding:36px;backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);box-shadow:0 10px 30px rgba(0,0,0,0.45);border:1px solid var(--glass-border);width:100%}
+
+    /* LANDING */
+    .hero{display:flex;gap:40px;align-items:center;justify-content:space-between}
+    .hero-left{flex:1}
+    .hero-right{flex:1;display:flex;align-items:center;justify-content:center}
+    .title{font-family:'Playfair Display';font-size:48px;margin:0 0 6px 0;letter-spacing:0.4px}
+    .subtitle{color:rgba(255,255,255,0.8);margin:0 0 18px;font-size:18px}
+    .cta-row{display:flex;gap:14px;align-items:center}
+    .btn{padding:12px 20px;border-radius:12px;border:none;cursor:pointer;font-weight:600}
+    .btn-primary{background:var(--accent);color:#fff;box-shadow:0 6px 20px rgba(255,110,199,0.12)}
+    .btn-ghost{background:transparent;border:1px solid rgba(255,255,255,0.06);color:rgba(255,255,255,0.9)}
+
+    /* Floating music button */
+    .music-toggle{position:fixed;right:22px;bottom:22px;width:56px;height:56px;border-radius:14px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));display:flex;align-items:center;justify-content:center;border:1px solid var(--glass-border);cursor:pointer}
+
+    /* small helpers */
+    .muted{opacity:0.5}
+    .hidden{display:none}
+
+    /* SECTIONS styling */
+    .centered{display:flex;flex-direction:column;align-items:center;gap:18px}
+
+    /* MESSAGE card */
+    .wish{max-width:720px;text-align:left}
+    .wish .cardhead{font-size:28px;margin-bottom:6px}
+    .wish p{line-height:1.5;color:rgba(255,255,255,0.9)}
+    .reveal-btn{margin-top:18px}
+
+    /* GALLERY */
+    .gallery{display:grid;grid-template-columns:1fr 320px;gap:20px;align-items:center}
+    .carousel{height:360px;border-radius:14px;overflow:hidden;position:relative}
+    .slides{display:flex;height:100%;transition:transform .6s cubic-bezier(.23,.99,.36,.99)}
+    .slide{min-width:100%;height:100%;object-fit:cover}
+    .thumbs{display:flex;flex-direction:column;gap:10px}
+    .thumb{width:100%;height:100px;object-fit:cover;border-radius:10px;cursor:pointer;opacity:0.9}
+
+    /* COUNTDOWN neon style */
+    .countdown{display:flex;gap:18px;align-items:center}
+    .timebox{background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));padding:18px 24px;border-radius:12px;border:1px solid rgba(255,255,255,0.06);min-width:110px}
+    .timebox .num{font-size:28px;font-weight:700;color:var(--neon);text-shadow:0 0 10px rgba(249,248,113,0.12)}
+    .timebox .label{font-size:12px;color:rgba(255,255,255,0.7)}
+
+    /* CAKE */
+    .cake-wrap{display:flex;flex-direction:column;align-items:center;gap:16px}
+    .cake{width:220px;height:160px;position:relative}
+    .cake .layer{position:absolute;left:0;right:0;margin:auto;width:70%;height:40px;border-radius:12px;background:linear-gradient(90deg,#ffd6e8,#ff9db7);box-shadow:0 6px 18px rgba(0,0,0,0.35)}
+    .cake .layer.bottom{bottom:10px;width:100%}
+    .cake .layer.middle{bottom:60px;width:84%}
+    .cake .layer.top{bottom:100px;width:60%}
+    .candle{position:absolute;left:50%;transform:translateX(-50%);bottom:140px;width:12px;height:48px;border-radius:8px;background:#fff7ad;display:flex;align-items:flex-start;justify-content:center}
+    .flame{width:8px;height:14px;background:linear-gradient(180deg,#ffd166,#ff7b7b);border-radius:50%;margin-top:4px;filter:drop-shadow(0 6px 10px rgba(255,120,120,0.2));animation:flame 800ms infinite}
+    @keyframes flame{0%{transform:translateY(0) scale(1)}50%{transform:translateY(-3px) scale(.95)}100%{transform:translateY(0) scale(1)}}
+
+    /* balloon group */
+    .balloon-area{position:absolute;inset:0;pointer-events:none}
+    .balloon{position:absolute;bottom:-120px;pointer-events:auto;display:flex;flex-direction:column;align-items:center;gap:6px}
+    .balloon .body{width:56px;height:72px;border-radius:60% 60% 58% 58%;background:var(--accent);display:flex;align-items:center;justify-content:center;box-shadow:0 8px 18px rgba(0,0,0,0.28)}
+    .balloon .string{width:2px;height:80px;background:linear-gradient(#fff, rgba(255,255,255,0.1));}
+    .pop{transform:scale(0);opacity:0;transition:all .25s ease}
+
+    /* fireworks canvas */
+    #fwCanvas{position:fixed;left:0;top:0;width:100%;height:100%;pointer-events:none;z-index:60}
+
+    /* fireworks section UI */
+    .fire-section{display:flex;flex-direction:column;align-items:center;gap:12px}
+    .celebrate-btn{padding:12px 18px;border-radius:12px;border:none;cursor:pointer;background:linear-gradient(90deg,#ffd166,#ff6ec7);color:#111;font-weight:700}
+
+    /* ending */
+    .ending{display:flex;flex-direction:column;align-items:center;gap:12px}
+
+    /* responsive */
+    @media (max-width:880px){
+      .gallery{grid-template-columns:1fr;}
+      .hero{flex-direction:column}
+      .title{font-size:32px}
+      .slides{height:260px}
+    }
+  </style>
 </head>
 <body>
-  <!-- Landing Page -->
-  <section id="landing" class="section">
-    <h1 class="title">🎂 Happy Birthday <span id="friendName">[Friend’s Name]</span> 🎂</h1>
-    <button id="startBtn">Start Celebration 🎉</button>
-    <canvas id="balloons"></canvas>
-  </section>
+  <div class="container">
+    <header>
+      <div class="logo">
+        <div class="mark">HB</div>
+        <div>
+          <div style="font-weight:600">Surprise</div>
+          <div style="font-size:12px;color:rgba(255,255,255,0.55)">A personal birthday site</div>
+        </div>
+      </div>
+      <nav aria-label="Sections">
+        <button data-to="landing" class="nav-btn active">Home</button>
+        <button data-to="message" class="nav-btn">Wish</button>
+        <button data-to="gallery" class="nav-btn">Gallery</button>
+        <button data-to="countdown" class="nav-btn">Countdown</button>
+        <button data-to="cake" class="nav-btn">Cake</button>
+        <button data-to="fireworks" class="nav-btn">Celebrate</button>
+        <button data-to="ending" class="nav-btn">Ending</button>
+      </nav>
+    </header>
 
-  <!-- Personalized Message -->
-  <section id="message" class="section hidden">
-    <div class="card">
-      <h2>My Special Wish 💖</h2>
-      <p>You are the best friend ever! Wishing you lots of joy, success, and happiness. 🎁</p>
-      <button onclick="nextSection('gallery')">Next ➡️</button>
-    </div>
-  </section>
+    <main>
+      <!-- LANDING -->
+      <section id="landing" class="section">
+        <div class="glass hero" style="gap:24px">
+          <div class="hero-left">
+            <h1 class="title">Happy Birthday, <span id="friendNameDisplay">[Friend's Name]</span> 🎉</h1>
+            <p class="subtitle">A little surprise made with ❤️ — click below to begin the celebration.</p>
+            <div class="cta-row">
+              <button id="startBtn" class="btn btn-primary">Start Celebration</button>
+              <button id="previewMsg" class="btn btn-ghost">Preview Wish</button>
+            </div>
+            <div style="margin-top:18px;color:rgba(255,255,255,0.7);font-size:13px">Tip: Replace images in <code>assets/images/</code> and music in <code>assets/music/</code></div>
+          </div>
+          <div class="hero-right" aria-hidden>
+            <div style="width:320px;height:320px;display:flex;align-items:center;justify-content:center;position:relative">
+              <!-- gentle cake preview -->
+              <div style="width:220px;height:170px;position:relative">
+                <div style="position:absolute;left:0;right:0;margin:auto;bottom:10px;width:100%;height:40px;border-radius:12px;background:linear-gradient(90deg,#ffd6e8,#ff9db7);box-shadow:0 6px 18px rgba(0,0,0,0.35)"></div>
+                <div style="position:absolute;left:0;right:0;margin:auto;bottom:60px;width:84%;height:40px;border-radius:12px;background:linear-gradient(90deg,#ffd6e8,#ff9db7);box-shadow:0 6px 18px rgba(0,0,0,0.35)"></div>
+                <div style="position:absolute;left:0;right:0;margin:auto;bottom:100px;width:60%;height:40px;border-radius:12px;background:linear-gradient(90deg,#ffd6e8,#ff9db7);box-shadow:0 6px 18px rgba(0,0,0,0.35)"></div>
+                <div style="position:absolute;left:50%;transform:translateX(-50%);bottom:140px;width:12px;height:48px;border-radius:8px;background:#fff7ad;display:flex;align-items:flex-start;justify-content:center">
+                  <div style="width:8px;height:14px;background:linear-gradient(180deg,#ffd166,#ff7b7b);border-radius:50%;margin-top:4px;filter:drop-shadow(0 6px 10px rgba(255,120,120,0.2))"></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- balloon area (DOM balloons) -->
+        <div class="balloon-area" id="balloonArea"></div>
+      </section>
 
-  <!-- Gallery -->
-  <section id="gallery" class="section hidden">
-    <h2>Memories Together 📸</h2>
-    <div class="slideshow">
-      <img src="assets/images/photo1.jpg" class="slide active">
-      <img src="assets/images/photo2.jpg" class="slide">
-      <img src="assets/images/photo3.jpg" class="slide">
-    </div>
-    <button onclick="nextSection('countdown')">Next ➡️</button>
-  </section>
+      <!-- MESSAGE -->
+      <section id="message" class="section hidden">
+        <div class="glass wish centered">
+          <div style="text-align:center">
+            <h2 class="cardhead">A Special Wish for <span id="friendNameInMessage">[Friend]</span></h2>
+            <p class="subtitle" style="margin-bottom:6px">Click the button to reveal the full message</p>
+          </div>
+          <div id="wishCard" style="width:100%;padding:20px;border-radius:12px;background:linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));border:1px solid rgba(255,255,255,0.04);">
+            <div id="wishHidden" style="height:120px;overflow:hidden;display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,0.85);font-size:18px">Click Reveal to see your message ✨</div>
+            <div style="display:flex;gap:12px;margin-top:16px;justify-content:center">
+              <button id="revealBtn" class="btn btn-primary reveal-btn">Reveal Message</button>
+              <button class="btn btn-ghost" onclick="goTo('gallery')">See Gallery</button>
+            </div>
+          </div>
+        </div>
+      </section>
 
-  <!-- Countdown -->
-  <section id="countdown" class="section hidden">
-    <h2>Countdown to Birthday 🎊</h2>
-    <div id="timer"></div>
-    <button onclick="nextSection('cake')">Next ➡️</button>
-  </section>
+      <!-- GALLERY -->
+      <section id="gallery" class="section hidden">
+        <div class="glass gallery">
+          <div>
+            <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+              <h3 style="margin:0">Memories</h3>
+              <div style="font-size:13px;color:rgba(255,255,255,0.7)">Auto-play slideshow • Click thumbnail to view</div>
+            </div>
+            <div class="carousel">
+              <div class="slides" id="slides">
+                <!-- slides inserted by JS -->
+              </div>
+            </div>
+          </div>
+          <div>
+            <div style="font-weight:600;margin-bottom:8px">Thumbnails</div>
+            <div class="thumbs" id="thumbs"></div>
+            <div style="margin-top:14px;display:flex;gap:8px">
+              <button class="btn btn-ghost" onclick="prevSlide()">Prev</button>
+              <button class="btn btn-primary" onclick="nextSlide()">Next</button>
+            </div>
+          </div>
+        </div>
 
-  <!-- Cake -->
-  <section id="cake" class="section hidden">
-    <h2>Make a Wish 🎂</h2>
-    <div class="cake">
-      <div class="candle" id="candle"></div>
-    </div>
-    <button onclick="blowCandle()">Blow Candle 🕯️</button>
-    <button onclick="nextSection('fireworks')">Next ➡️</button>
-  </section>
+        <!-- lightbox -->
+        <div id="lightbox" class="hidden" style="position:fixed;inset:0;background:rgba(0,0,0,0.8);display:flex;align-items:center;justify-content:center;z-index:80">
+          <img id="lightboxImg" src="" style="max-width:90%;max-height:90%;border-radius:12px;box-shadow:0 10px 40px rgba(0,0,0,0.7)"/>
+        </div>
+      </section>
 
-  <!-- Fireworks -->
-  <section id="fireworks" class="section hidden">
-    <h2>Celebrate 🎇</h2>
-    <button id="celebrateBtn">Start Fireworks 🎆</button>
-    <button onclick="nextSection('ending')">Next ➡️</button>
-    <canvas id="fireworksCanvas"></canvas>
-  </section>
+      <!-- COUNTDOWN -->
+      <section id="countdown" class="section hidden">
+        <div class="glass centered">
+          <h3 style="margin:0">Countdown to the Big Day</h3>
+          <div class="countdown" style="margin-top:18px">
+            <div class="timebox"><div class="num" id="days">00</div><div class="label">Days</div></div>
+            <div class="timebox"><div class="num" id="hours">00</div><div class="label">Hours</div></div>
+            <div class="timebox"><div class="num" id="mins">00</div><div class="label">Minutes</div></div>
+            <div class="timebox"><div class="num" id="secs">00</div><div class="label">Seconds</div></div>
+          </div>
+          <div style="margin-top:16px"><button class="btn btn-primary" onclick="goTo('cake')">Proceed to Cake</button></div>
+        </div>
+      </section>
 
-  <!-- Ending -->
-  <section id="ending" class="section hidden">
-    <h2>Hope you loved this surprise 💖</h2>
-    <button onclick="location.reload()">Replay Celebration 🔄</button>
-  </section>
+      <!-- CAKE -->
+      <section id="cake" class="section hidden">
+        <div class="glass centered cake-wrap">
+          <h3 style="margin:0">Make a Wish & Blow the Candle</h3>
+          <div class="cake" id="cakeEl">
+            <div class="layer bottom"></div>
+            <div class="layer middle"></div>
+            <div class="layer top"></div>
+            <div class="candle" id="candleEl" aria-hidden>
+              <div class="flame" id="flameEl"></div>
+            </div>
+          </div>
+          <div style="display:flex;gap:12px">
+            <button class="btn btn-primary" id="blowBtn">Blow Candle</button>
+            <button class="btn btn-ghost" onclick="goTo('fireworks')">Skip to Celebrate</button>
+          </div>
+        </div>
+      </section>
 
-  <!-- Music -->
-  <audio id="bgMusic" src="assets/music/birthday.mp3" loop></audio>
-  <button id="musicBtn">🔊 Music</button>
+      <!-- FIREWORKS -->
+      <section id="fireworks" class="section hidden">
+        <div class="glass fire-section">
+          <h3 style="margin:0">Time to Celebrate!</h3>
+          <p style="color:rgba(255,255,255,0.8);margin:0">Click the button to start fireworks. They auto-stop after a while.</p>
+          <div style="display:flex;gap:12px;margin-top:12px">
+            <button class="celebrate-btn" id="startFw">Start Fireworks</button>
+            <button class="btn btn-ghost" onclick="goTo('ending')">Finish</button>
+          </div>
+        </div>
+      </section>
 
-  <script src="script.js"></script>
+      <!-- ENDING -->
+      <section id="ending" class="section hidden">
+        <div class="glass ending">
+          <h2 style="margin:0">Hope you loved the surprise 🎁</h2>
+          <p style="color:rgba(255,255,255,0.82)">Click replay to run the celebration again.</p>
+          <div style="display:flex;gap:12px;margin-top:6px">
+            <button class="btn btn-primary" id="replayBtn">Replay Celebration</button>
+            <button class="btn btn-ghost" onclick="goTo('landing')">Back Home</button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <footer style="padding:18px 28px;text-align:center;color:rgba(255,255,255,0.4);font-size:13px">Made with ❤️ — Edit assets in <code>assets/</code></footer>
+  </div>
+
+  <!-- CANVAS for fireworks -->
+  <canvas id="fwCanvas"></canvas>
+
+  <!-- BACKGROUND MUSIC (replace path with your mp3) -->
+  <audio id="bgMusic" src="assets/music/birthday.mp3" loop preload="auto"></audio>
+  <div class="music-toggle" id="musicToggle" title="Play / Pause music">🔊</div>
+
+  <script>
+    /* ----------------- CONFIG (Edit these) ----------------- */
+    const CONFIG = {
+      friendName: "Your Friend",
+      birthdayDate: "2025-09-20T00:00:00", // ISO format — change to actual birthday
+      images: [
+        'assets/images/photo1.jpg',
+        'assets/images/photo2.jpg',
+        'assets/images/photo3.jpg',
+        'assets/images/photo4.jpg'
+      ],
+      music: 'assets/music/birthday.mp3'
+    }
+
+    /* ----------------- BASIC UI HANDLERS ----------------- */
+    const navBtns = document.querySelectorAll('.nav-btn');
+    function setActiveNav(id){
+      navBtns.forEach(b=>b.classList.toggle('active', b.dataset.to===id));
+    }
+    function goTo(id){
+      document.querySelectorAll('main .section').forEach(s=>s.classList.add('hidden'));
+      const el = document.getElementById(id);
+      if(el) el.classList.remove('hidden');
+      setActiveNav(id);
+    }
+    document.querySelectorAll('nav .nav-btn').forEach(b=>b.addEventListener('click',()=>goTo(b.dataset.to)));
+
+    // show friend name
+    document.getElementById('friendNameDisplay').textContent = CONFIG.friendName;
+    document.getElementById('friendNameInMessage').textContent = CONFIG.friendName;
+
+    // start button
+    document.getElementById('startBtn').addEventListener('click',()=>{
+      goTo('message');
+      playMusic();
+      spawnBalloons(8);
+      smallConfettiBurst();
+    });
+    document.getElementById('previewMsg').addEventListener('click',()=>{
+      goTo('message');
+    });
+
+    /* ----------------- MUSIC ----------------- */
+    const music = document.getElementById('bgMusic');
+    music.src = CONFIG.music;
+    const musicToggle = document.getElementById('musicToggle');
+    function playMusic(){
+      music.play().catch(()=>{/* autoplay blocked until user interacts — startBtn click solves this */});
+      musicToggle.textContent = '🔊';
+    }
+    function pauseMusic(){ music.pause(); musicToggle.textContent='🔈'; }
+    musicToggle.addEventListener('click', ()=>{ if(music.paused) playMusic(); else pauseMusic(); });
+
+    /* ----------------- WISH REVEAL ----------------- */
+    const revealBtn = document.getElementById('revealBtn');
+    const wishHidden = document.getElementById('wishHidden');
+    revealBtn.addEventListener('click', ()=>{
+      // animated reveal — replace this text with your own full message
+      wishHidden.innerHTML = `Dear <strong>${CONFIG.friendName}</strong>,<br><br>I wish you a year full of joy, success and unforgettable memories. You deserve the best. Happy Birthday! 🎂❤️`;
+      revealBtn.textContent = 'Revealed ✓';
+      revealBtn.disabled = true;
+    });
+
+    /* ----------------- GALLERY SLIDESHOW & LIGHTBOX ----------------- */
+    const slidesEl = document.getElementById('slides');
+    const thumbsEl = document.getElementById('thumbs');
+    const lightbox = document.getElementById('lightbox');
+    const lightboxImg = document.getElementById('lightboxImg');
+
+    let slideIndex = 0;
+    function buildGallery(){
+      slidesEl.innerHTML = '';
+      thumbsEl.innerHTML = '';
+      CONFIG.images.forEach((src,i)=>{
+        const img = document.createElement('img');
+        img.src = src; img.className = 'slide'; img.loading='lazy';
+        slidesEl.appendChild(img);
+
+        const t = document.createElement('img');
+        t.src=src; t.className='thumb'; t.addEventListener('click',()=>openLightbox(src));
+        thumbsEl.appendChild(t);
+      });
+      updateSlides();
+    }
+    function updateSlides(){
+      slidesEl.style.transform = `translateX(-${slideIndex*100}%)`;
+    }
+    function nextSlide(){ slideIndex = (slideIndex+1)%CONFIG.images.length; updateSlides(); }
+    function prevSlide(){ slideIndex = (slideIndex-1+CONFIG.images.length)%CONFIG.images.length; updateSlides(); }
+
+    // autoplay
+    let slideTimer = setInterval(nextSlide,3500);
+    slidesEl.addEventListener('mouseenter',()=>clearInterval(slideTimer));
+    slidesEl.addEventListener('mouseleave',()=>{ clearInterval(slideTimer); slideTimer = setInterval(nextSlide,3500); });
+
+    function openLightbox(src){ lightboxImg.src = src; lightbox.classList.remove('hidden'); }
+    lightbox.addEventListener('click',()=> lightbox.classList.add('hidden'));
+
+    buildGallery();
+
+    /* ----------------- COUNTDOWN ----------------- */
+    const target = new Date(CONFIG.birthdayDate).getTime();
+    function updateCountdown(){
+      const now = Date.now();
+      let diff = target - now;
+      if(diff <= 0){ document.getElementById('days').textContent='00'; document.getElementById('hours').textContent='00'; document.getElementById('mins').textContent='00'; document.getElementById('secs').textContent='00';
+        document.querySelector('#countdown .glass h3').textContent = "It's Today! 🎉"; return; }
+      const days = Math.floor(diff / (1000*60*60*24));
+      const hours = Math.floor((diff/(1000*60*60))%24);
+      const mins = Math.floor((diff/(1000*60))%60);
+      const secs = Math.floor((diff/1000)%60);
+      document.getElementById('days').textContent = String(days).padStart(2,'0');
+      document.getElementById('hours').textContent = String(hours).padStart(2,'0');
+      document.getElementById('mins').textContent = String(mins).padStart(2,'0');
+      document.getElementById('secs').textContent = String(secs).padStart(2,'0');
+    }
+    setInterval(updateCountdown,1000);
+    updateCountdown();
+
+    /* ----------------- BALLOONS (click to pop) ----------------- */
+    const balloonArea = document.getElementById('balloonArea');
+    function spawnBalloons(count=6){
+      for(let i=0;i<count;i++){
+        const b = document.createElement('div'); b.className='balloon';
+        const left = Math.random()*90; const delay = Math.random()*3;
+        b.style.left = left+'%'; b.style.transition = `transform 1s linear ${delay}s, opacity .4s`;
+        b.innerHTML = `<div class="body" style="background:linear-gradient(180deg, hsl(${Math.random()*360},80%,70%), hsl(${Math.random()*360},80%,55%));width:56px;height:72px;border-radius:60% 60% 58% 58%"></div><div class="string"></div>`;
+        balloonArea.appendChild(b);
+        // float animation
+        (function animateBalloon(el){
+          let y = 0; function up(){ y -= 0.5 + Math.random()*0.8; el.style.transform = `translateY(${y}px)`; if(parseFloat(el.style.bottom||'-120') + y < -window.innerHeight-200){ el.remove(); } else requestAnimationFrame(up); }
+          el.addEventListener('click', ()=>{ el.querySelector('.body').classList.add('pop'); el.style.opacity=0; setTimeout(()=>el.remove(),300); smallConfettiBurst(); });
+          up();
+        })(b);
+      }
+    }
+
+    /* ----------------- SMALL CONFETTI BURST ----------------- */
+    function smallConfettiBurst(){
+      const cv = document.createElement('canvas');
+      cv.style.position='fixed'; cv.style.left=0; cv.style.top=0; cv.style.width='100%'; cv.style.height='100%'; cv.style.zIndex=50; document.body.appendChild(cv);
+      cv.width = window.innerWidth; cv.height = window.innerHeight; const ctx = cv.getContext('2d');
+      const parts = [];
+      for(let i=0;i<80;i++) parts.push({x:window.innerWidth/2, y:window.innerHeight/3, vx:(Math.random()-0.5)*10, vy:(Math.random()-3)*8, r:2+Math.random()*5, color:`hsl(${Math.random()*360},80%,60%)`});
+      let t=0; function frame(){ t++; ctx.clearRect(0,0,cv.width,cv.height); parts.forEach(p=>{ p.x+=p.vx; p.y+=p.vy; p.vy+=0.35; ctx.fillStyle=p.color; ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2); ctx.fill(); }); if(t<120) requestAnimationFrame(frame); else cv.remove(); }
+      frame();
+    }
+
+    /* ----------------- BLOW CANDLE (smoke & extinguish) ----------------- */
+    const blowBtn = document.getElementById('blowBtn');
+    const flameEl = document.getElementById('flameEl');
+    blowBtn.addEventListener('click',()=>{
+      // extinguish animation
+      flameEl.style.transition='transform 350ms ease, opacity 350ms ease';
+      flameEl.style.transform='translateY(-8px) scale(.2)'; flameEl.style.opacity='0';
+      smallConfettiBurst();
+      setTimeout(()=>{
+        flameEl.remove();
+      },450);
+      // play short audio if available
+      // show message
+      alert('🕯️ Candle blown! Make a Wish 🎉');
+    });
+
+    /* ----------------- FIREWORKS ENGINE ----------------- */
+    const fwCanvas = document.getElementById('fwCanvas');
+    const fwCtx = fwCanvas.getContext('2d');
+    let fwWidth = fwCanvas.width = window.innerWidth; let fwHeight = fwCanvas.height = window.innerHeight;
+    window.addEventListener('resize', ()=>{ fwWidth = fwCanvas.width = window.innerWidth; fwHeight = fwCanvas.height = window.innerHeight; });
+
+    let particles = [];
+    function launchFirework(x,y){
+      const hue = Math.random()*360; const count = 30 + Math.floor(Math.random()*40);
+      for(let i=0;i<count;i++){
+        const angle = Math.random()*Math.PI*2; const speed = Math.random()*5 + 2;
+        particles.push({x,y, vx:Math.cos(angle)*speed, vy:Math.sin(angle)*speed, life:60+Math.random()*40, age:0, color:`hsl(${hue},100%,60%)`});
+      }
+    }
+    function fwLoop(){
+      fwCtx.clearRect(0,0,fwWidth,fwHeight);
+      for(let i=particles.length-1;i>=0;i--){ let p=particles[i]; p.age++; p.vy += 0.06; p.x += p.vx; p.y += p.vy; fwCtx.globalAlpha = Math.max(0,1 - p.age/p.life); fwCtx.fillStyle = p.color; fwCtx.beginPath(); fwCtx.arc(p.x,p.y,2.2,0,Math.PI*2); fwCtx.fill(); if(p.age>p.life) particles.splice(i,1); }
+      requestAnimationFrame(fwLoop);
+    }
+    fwLoop();
+
+    // start fireworks on button
+    document.getElementById('startFw').addEventListener('click', ()=>{
+      // launch fireworks periodically for 5-7 seconds
+      const interval = setInterval(()=> launchFirework(Math.random()*fwWidth, Math.random()*fwHeight/2), 250);
+      setTimeout(()=> clearInterval(interval), 7000);
+    });
+
+    /* ----------------- REPLAY / RESET ----------------- */
+    document.getElementById('replayBtn').addEventListener('click', ()=>{
+      // reload to reset everything (simple & reliable)
+      location.reload();
+    });
+
+    /* ----------------- INITIAL BALLOONS (gentle) ----------------- */
+    spawnBalloons(4);
+
+    /* ----------------- small helpers for nav binding ----------------- */
+    function bindNavButtons(){
+      document.querySelectorAll('.nav-btn').forEach(b=>b.addEventListener('click',()=>{ goTo(b.dataset.to); }));
+    }
+    bindNavButtons();
+
+    /* ----------------- small confetti on load (optional) ----------------- */
+    setTimeout(()=>{},400);
+
+    /* ----------------- FINISH: small accessibility focus mapping ----------------- */
+    document.addEventListener('keydown', (e)=>{
+      if(e.key==='Escape'){ document.querySelectorAll('main .section').forEach(s=>s.classList.add('hidden')); goTo('landing'); }
+    });
+
+    /* ----------------- NOTES ----------------- */
+    // To customize: change CONFIG at the top (friendName, birthdayDate, images array, music path).
+    // Replace image files and music in your assets folder. Save this file as `index.html` and open in browser or host on GitHub Pages.
+  </script>
 </body>
 </html>
